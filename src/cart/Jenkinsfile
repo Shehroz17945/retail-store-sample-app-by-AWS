@@ -15,7 +15,6 @@ pipeline {
     
     environment {
         SONAR_SCANNER = tool 'sonarqube-scanner-tool'
-        OWASP_SCANNER = tool 'DC'
     }
     
     stages {
