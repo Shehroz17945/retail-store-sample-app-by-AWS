@@ -60,7 +60,7 @@ pipeline {
                     --format JSON
                     --failOnCVSS 7
                     --suppression owasp-suppressions.xml
-                ''', odcInstallation: 'DC'
+                ''', odcInstallation: 'DC', nvdCredentialsId: 'nvdApiKey-of-Owasp-Dependency-Check'
             }
             post {
                 always {
@@ -106,14 +106,29 @@ pipeline {
             steps {
                 echo 'Scanning Docker image with Trivy...'
                 sh """
-                    trivy image \
-                        --severity HIGH,CRITICAL \
-                        --exit-code 1 \
-                        --no-progress \
-                        --format table \
-                        --output trivy-report-cart-service.json \
+                    trivy image \\
+                        --severity HIGH,CRITICAL \\
+                        --exit-code 1 \\
+                        --no-progress \\
+                        --format template \\
+                        --template '@/usr/local/share/trivy/templates/html.tpl' \\
+                        --output trivy-report.html \\
                         zohaibwarraich/retail-store-cart-service:${BUILD_NUMBER}
                 """
+            }
+            post {
+                always {
+                    // Publish HTML report to Jenkins
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: 'trivy-report.html',
+                        reportName: 'Trivy Security Scan Report',
+                        reportTitles: 'Trivy Vulnerability Report'
+                    ])
+                }
             }
         }
         
