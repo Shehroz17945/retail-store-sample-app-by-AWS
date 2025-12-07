@@ -40,13 +40,21 @@ The application has been deliberately over-engineered to generate multiple de-co
 
 ![Architecture](/docs/images/architecture.png)
 
-| Component                  | Language | Container Image                                                             | Helm Chart                                                                        | Description                             |
-| -------------------------- | -------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------- |
-| [UI](./src/ui/)            | Java     | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui)       | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-ui-chart)       | Store user interface                    |
-| [Catalog](./src/catalog/)  | Go       | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-catalog)  | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-catalog-chart)  | Product catalog API                     |
-| [Cart](./src/cart/)        | Java     | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-cart)     | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-cart-chart)     | User shopping carts API                 |
-| [Orders](./src/orders)     | Java     | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-orders)   | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-orders-chart)   | User orders API                         |
-| [Checkout](./src/checkout) | Node     | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-checkout) | [Link](https://gallery.ecr.aws/aws-containers/retail-store-sample-checkout-chart) | API to orchestrate the checkout process |
+| Component                  | Language | Container Image                                                             | Description                             |
+| -------------------------- | -------- | --------------------------------------------------------------------------- | --------------------------------------- |
+| [UI](./src/ui/)            | Java     | [Link](https://hub.docker.com/repository/docker/zohaibwarraich/retail-store-ui-service/general)       | Store user interface                    |
+| [Catalog](./src/catalog/)  | Go       | [Link](https://hub.docker.com/repository/docker/zohaibwarraich/retail-store-catalog-service/general)  | Product catalog API                     |
+| [Cart](./src/cart/)        | Java     | [Link](https://hub.docker.com/repository/docker/zohaibwarraich/retail-store-cart-service/general)     | User shopping carts API                 |
+| [Orders](./src/orders)     | Java     | [Link](https://hub.docker.com/repository/docker/zohaibwarraich/retail-store-orders-service/general)   | User orders API                         |
+| [Checkout](./src/checkout) | Node     | [Link](https://hub.docker.com/repository/docker/zohaibwarraich/retail-store-checkout-service/general) | API to orchestrate the checkout process |
+
+## 🚀 Technologies
+
+*   **Containerization**: Docker (Multi-stage builds, Distroless images)
+*   **Orchestration**: Kubernetes 
+*   **CI/CD**: Jenkins, ArgoCD
+*   **Messaging**: RabbitMQ (for async processing)
+*   **Databases**: MySQL, PostgreSQL, DynamoDB , Redis
 
 ## Quickstart
 
@@ -73,34 +81,6 @@ http://localhost:8888
 ```
 
 To stop the container in `docker` use Ctrl+C.
-
-### Docker Compose
-
-This deployment method will run the application on your local machine using `docker-compose`.
-
-Pre-requisites:
-
-- Docker installed locally
-
-Download the latest Docker Compose file and use `docker compose` to run the application containers:
-
-```
-wget https://github.com/aws-containers/retail-store-sample-app/releases/latest/download/docker-compose.yaml
-
-DB_PASSWORD='<some password>' docker compose --file docker-compose.yaml up
-```
-
-Open the frontend in a browser window:
-
-```
-http://localhost:8888
-```
-
-To stop the containers in `docker compose` use Ctrl+C. To delete all the containers and related resources run:
-
-```
-docker compose -f docker-compose.yaml down
-```
 
 ### Kubernetes
 
@@ -143,7 +123,10 @@ The following options are available to deploy the application using Terraform:
 
 ## Security
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+This project follows container security best practices:
+*   **Distroless Images**: Using `gcr.io/distroless` base images to minimize attack surface.
+*   **Non-Root Users**: All containers run as non-root users.
+*   **Multi-Stage Builds**: Build tools and dependencies are excluded from the final runtime images.
 
 ## License
 
