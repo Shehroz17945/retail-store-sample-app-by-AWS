@@ -57,8 +57,8 @@ pipeline {
                     --scan src/cart
                     --format HTML
                     --format JSON
+                    --format XML
                     --failOnCVSS 7
-                    --suppression owasp-suppressions.xml
                 ''', odcInstallation: 'DC', nvdCredentialsId: 'nvdApiKey-of-Owasp-Dependency-Check'
             }
             post {
