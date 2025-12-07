@@ -5,12 +5,15 @@ pipeline {
     
     tools {
         maven 'maven-tool'
-        dependencyCheck 'DC'
+        'dependency-check' 'DC'
     }
     
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '2')
-        rateLimitBuilds([count: 1, durationName: 'minute', userBoost: false])
+        throttleJobProperty(
+            maxConcurrentPerNode: 1,
+            maxConcurrentTotal: 1
+        )   
     }
     
     environment {
