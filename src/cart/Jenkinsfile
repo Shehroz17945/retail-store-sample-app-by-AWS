@@ -21,6 +21,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out source code...'
+                slackSend channel: "retail-store-sample-aws", message: "Build Started: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
                 checkout scm
             }
         }
@@ -28,7 +29,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building Cart Service...'
-                slackSend channel: "retail-store-sample-aws", message: "Build Started: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
                 sh """
                     mvn -f src/cart/pom.xml clean package -DskipTests
                 """
