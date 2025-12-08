@@ -90,7 +90,7 @@ pipeline {
                         stage('Quality Gate') {
                             steps {
                                 echo 'Waiting for Quality Gate...'
-                                timeout(time: 15, unit: 'MINUTES') {
+                                timeout(time: 10, unit: 'MINUTES') {
                                     waitForQualityGate abortPipeline: true
                                 }
                             }
@@ -113,19 +113,29 @@ pipeline {
             steps {
                 echo 'Scanning Docker image with Trivy...'
                 sh """
-                    trivy image \\
-                        --severity HIGH,CRITICAL \\
-                        --exit-code 1 \\
-                        --no-progress \\
-                        --format template \\
-                        --template '@/usr/local/share/trivy/templates/html.tpl' \\
-                        --output trivy-report.html \\
+                    # Generate JSON report (for archiving)
+                    trivy image \
+                        --severity HIGH,CRITICAL \
+                        --exit-code 0 \
+                        --no-progress \
+                        --format json \
+                        --output trivy-report.json \
+                        zohaibwarraich/retail-store-cart-service:${BUILD_NUMBER}
+                    
+                    # Generate HTML report (for Jenkins UI)
+                    trivy image \
+                        --severity HIGH,CRITICAL \
+                        --exit-code 1 \
+                        --no-progress \
+                        --format template \
+                        --template '@/usr/local/share/trivy/templates/html.tpl' \
+                        --output trivy-report.html \
                         zohaibwarraich/retail-store-cart-service:${BUILD_NUMBER}
                 """
             }
             post {
                 always {
-                    // Publish HTML report to Jenkins
+                    // Publish HTML report to Jenkins UI
                     publishHTML([
                         allowMissing: false,
                         alwaysLinkToLastBuild: true,
@@ -135,6 +145,9 @@ pipeline {
                         reportName: 'Trivy Security Scan Report',
                         reportTitles: 'Trivy Vulnerability Report'
                     ])
+                    
+                    // Archive JSON report for download
+                    archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
                 }
             }
         }
