@@ -8,7 +8,7 @@ This service provides an API for storing customer shopping carts. Data is stored
 
 ## Configuration
 
-The following environment variables are available for configuring the service:
+The  following environment variables are available for configuring the service:
 
 | Name                                            | Description                                                        | Default     |
 | ----------------------------------------------- | ------------------------------------------------------------------ | ----------- |
