@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-ingress
+  namespace: retail-store-ns
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: retail-store-gateway-nginx
+  policyTypes:
+  - Ingress
+  ingress:
+  - from: [] # Allow from everywhere (Internet)
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443

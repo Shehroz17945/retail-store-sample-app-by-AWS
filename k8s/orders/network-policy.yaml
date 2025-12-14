@@ -87,8 +87,7 @@ spec:
   - Ingress
   ingress:
   - from:
-    - podSelec
-    tor:
+    - podSelector:
         matchLabels:
           app: orders
     ports:

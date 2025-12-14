@@ -1,0 +1,26 @@
+# Gateway the actual Load Balancer instance listening on ports
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: retail-store-gateway
+  namespace: retail-store-ns
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    # Restrict which routes can attach to this listener
+    allowedRoutes:
+      namespaces:
+        from: All # can be 'All', 'Same' or 'Selector'
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: "retail-store.zohaibofficial.online" # Restrict listener to this host
+    tls:
+      mode: Terminate # Terminate SSL here
+      certificateRefs:
+      - name: retail-store-domain-tls-cert # Secret name containing the cert

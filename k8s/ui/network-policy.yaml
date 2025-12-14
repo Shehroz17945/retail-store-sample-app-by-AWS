@@ -12,8 +12,9 @@ spec:
   - Egress
   ingress:
   - from:
-    - ipBlock:
-        cidr: 0.0.0.0/0 # Allow External Access (NodePort/LoadBalancer)
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: retail-store-gateway-nginx
     ports:
     - protocol: TCP
       port: 8080

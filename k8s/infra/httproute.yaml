@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: retail-store-http-route
+  namespace: retail-store-ns
+spec:
+  # Attach to the Gateway created above
+  parentRefs:
+  - name: retail-store-gateway
+    port: 443
+    sectionName: https # Attach ONLY to HTTPS listener
+  hostnames:
+  - "retail-store.zohaibofficial.online"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: ui-svc
+      port: 8080
