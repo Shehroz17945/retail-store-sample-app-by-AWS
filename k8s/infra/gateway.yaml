@@ -4,8 +4,7 @@ kind: Gateway
 metadata:
   name: retail-store-gateway
   namespace: retail-store-ns
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  annotations: {}
 spec:
   gatewayClassName: nginx
   listeners:
