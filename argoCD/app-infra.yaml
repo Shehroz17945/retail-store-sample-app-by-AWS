@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: retail-store-infra
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: retail-store
+  source:
+    repoURL: 'https://github.com/zohaibwarraich1/retail-store-sample-app-by-AWS.git'
+    # Tracks the 'main' or 'master' branch
+    targetRevision: HEAD 
+    path: k8s/infra 
+    # Recursively apply manifests in subdirectories
+    directory:
+      recurse: true     
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: retail-store-ns
+  syncPolicy:
+    automated:
+      prune: true
+      # Enforces that Git is the single source of truth and undo manual changes in cluster.
+      selfHeal: true
+    syncOptions:
+    # Validate YAML syntax before applying
+    - Validate=true                  
+    # Auto-create 'retail-store-ns' if missing
+    - CreateNamespace=true   
+    # Ensure manual deletion cleans up dependents        
+    - PrunePropagationPolicy=foreground 
+    # If network issues or K8s API is busy, retry the sync automatically
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

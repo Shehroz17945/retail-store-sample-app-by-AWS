@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: retail-store
+  namespace: argocd
+  # Finalizer ensures that the project is not deleted until all its child applications are deleted first.
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: "Retail Store Sample App Project which isolates Retail Store resources."
+  sourceRepos:
+  - 'https://github.com/zohaibwarraich1/retail-store-sample-app-by-AWS.git'
+  
+  # Define where applications in this project are allowed to deploy.
+  destinations:
+  - namespace: retail-store-ns
+    server: https://kubernetes.default.svc
+
+  # RESOURCE WHITELISTS
+  # Cluster-Scoped Resources:
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace  # Needed for auto-creation of namespaces
+  - group: cert-manager.io
+    kind: ClusterIssuer # Used for global TLS configuration
+  - group: external-secrets.io
+    kind: ClusterSecretStore
+  
+  # Namespaced Resources:
+  namespaceResourceWhitelist:
+  - group: apps
+    kind: Deployment
+  - group: apps
+    kind: StatefulSet
+  - group: ''
+    kind: Service
+  - group: ''
+    kind: ConfigMap
+  - group: ''
+    kind: Secret
+  - group: ''
+    kind: ServiceAccount
+  - group: networking.k8s.io
+    kind: NetworkPolicy
+  - group: autoscaling
+    kind: HorizontalPodAutoscaler
+  - group: external-secrets.io
+    kind: ExternalSecret
+  - group: external-secrets.io
+    kind: SecretStore
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+  - group: cert-manager.io
+    kind: Certificate
+  - group: cert-manager.io
+    kind: Challenge
+  - group: cert-manager.io
+    kind: Order
+  # - group: gateway.nginx.org
+  #   kind: ClientSettingsPolicy
+
+  # Orphaned Resources Monitoring
+  # If an Application is deleted but its resources remain, or if someone manually creates then a resource in 'retail-store-ns' that isn't managed by Argo, warn in the UI.
+  orphanedResources:
+    warn: true
