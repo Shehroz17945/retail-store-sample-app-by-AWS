@@ -168,8 +168,8 @@ pipeline {
                         sh """
                             git config user.email "jenkins@example.com"
                             git config user.name "Jenkins"
-                            sed -i 's|image: zohaibwarraich/retail-store-cart-service:.*|image: zohaibwarraich/retail-store-cart-service:${IMAGE_TAG}|g' k8s/cart/deployment.yaml
-                            git add k8s/cart/deployment.yaml 
+                            sed -i 's|image: zohaibwarraich/retail-store-cart-service:.*|image: zohaibwarraich/retail-store-cart-service:${IMAGE_TAG}|g' k8s/cart/backend/deployment.yaml
+                            git add k8s/cart/backend/deployment.yaml 
                             git commit -m "Update Cart image tag to ${IMAGE_TAG} [skip ci]"
                             git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/zohaibwarraich1/retail-store-sample-app-by-AWS.git HEAD:main
                         """
